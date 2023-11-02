@@ -1,26 +1,42 @@
 import fs from 'fs';
 
 import config from '../config.js';
-import { rld } from '../lib/rld.js';
-import { hexToRgb } from '../helpers/hexToRgb.js';
-import { pixelsToImage } from '../helpers/pixelsToImage.js';
+import {rld} from '../lib/rld.js';
+import ibst from '../lib/ibst.js';
+import {hexToRgb} from '../helpers/hexToRgb.js';
+const log = console.log.bind(console);
 
-// Modular compress function
-export default (image) => {
+// Decompress function
+async function decompress() {
 
-    // Get hex dump
-    let hexDump = fs.readFileSync('src/out/rle.out.txt').toString();
+    return new Promise((resolve, reject) => {
 
-    // Run-Length decode
-    hexDump = rld(hexDump);
+        // Create read/write stream
+        let readStream = fs.createReadStream('src/out/mainout/compress.out.txt', {encoding: 'utf8'});
+        let writeStream = fs.createWriteStream('src/out/mainout/decompress.out.txt', {encoding: 'utf8'});
 
-    // Burrows-Wheel decode
-    // hexDump = bwtd(hexDump);
-    
-    // Convert hex codes to rgb codes
-    let rgbCodes = hexToRgb(hexDump);
-    
-    // Draw dev output
-    pixelsToImage(`src/out/out.${config.format}`, rgbCodes, image.width, image.height);
+        // Compress each chunk
+        readStream.on('data', async (chunk) => {
 
+            // ..
+            // log(chunk);
+
+            // Decompression sequence
+            let dump = rld(chunk);
+
+            // Write dump to file
+            fs.writeFileSync('src/out/mainout/rld.decompress.out.txt', dump, {encoding: 'utf8'});
+
+            // Decode using ibst sequence
+            // (standalone for memory reasons)
+            ibst(dump);
+
+        });
+
+        // Handling
+        readStream.on('end', (e) => { resolve(e) });
+        readStream.on('error', (e) => { reject(e) });
+
+    });
 };
+decompress();

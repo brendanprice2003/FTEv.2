@@ -1,21 +1,26 @@
 import config from '../config.js';
+const log = console.log.bind(console);
 
 export function compressColors(rgbArray) {
 
     let output = [];
-    let factor = config.colorDepth;
+    let target = config.colorDepth; // round to nearest <target>
 
-    // Check if factor is not null, else don't round
-    if (factor !== 0) {
+    // Loop over each code and round to nearest <target>
+    if (target !== 0) {
+
         for (let num of rgbArray) {
-            output.push(Math.ceil(num / factor) * factor);
+
+            let roundedCode = Math.ceil(num / target) * target;
+            if (roundedCode > 255) roundedCode = 255; // Don't round past 255
+            output.push(roundedCode);
         };
-    }
-    else {
-        for (let num of rgbArray) {
-            output.push(num);
-        };
+
+        return output;
     };
-
-    return output;
+    
+    // Else just return input parameter
+    return rgbArray;
 };
+
+// This does NOT round past 255

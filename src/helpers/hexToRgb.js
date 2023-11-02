@@ -1,12 +1,16 @@
+const log = console.log.bind(console);
+
 export function hexToRgb(hexString) {
 
     let rgbArray = [];
 
     // Remove any '#' characters from the input string
+    log(hexString);
     let cleanedHexString = hexString.replace(/#/g, '');
 
     // Iterate through the cleaned hex string in steps of 6 (to handle RGBA)
     for (let i = 0; i < cleanedHexString.length; i += 6) {
+
         let hexCode = cleanedHexString.substr(i, 6);
 
         // Parse the hex code into separate R, G, and B components

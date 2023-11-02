@@ -1,27 +1,31 @@
 import fs from 'fs';
 
 import config from './config.js';
-import setup from './process/setup.js';
-import compress from './process/compress.js';
+// import compress from './process/compress.js';
 import decompress from './process/decompress.js';
 import { imageToPixels } from './helpers/imageToPixels.js';
+const log = console.log.bind(console);
 
-// main
-const main = function () {
-
-    // Configurations
-    setup();
+// Main entry point
+const main = async function () {
 
     // Get image pixels, height, and width
-    let image = imageToPixels(`${config.path}`);
+    let imageData = imageToPixels(`${config.path}`);
+    fs.writeFileSync('src/out/devout/main.out.txt', imageData); // Write file
 
-    // Write raw pixels to file
-    fs.writeFileSync('src/out/raw.txt', image.data);
+    // Compress file in chunks
+    
 
-    // Compress image (stores md)
-    compress(image.data);
+    // // Compress image
+    // let compressOutput = await compress(image.data);
 
-    // Decompress image
-    decompress(image);
+    // // Decompress image
+    // decompress(image, compressOutput);
 };
-main();
+main()
+
+// Notes:
+
+// Remove blockSize functionality from BST function
+// Fix compress function not working and logging *something* to console
+// Change the compress/decompress sequence to use FS, instead of memory

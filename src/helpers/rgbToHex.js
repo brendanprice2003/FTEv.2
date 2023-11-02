@@ -1,11 +1,17 @@
+import rgbHex from 'rgb-hex';
+const log = console.log.bind(console);
+
 export function rgbToHex(rgbArray) {
 
-    let hexString = '';
+    let output = '';
 
-    // One-liner that I found somewhere; turns rgb array into hex
-    for (let i=0; i < rgbArray.length; i += 4) {
-        hexString += `#${((1 << 24) | (rgbArray[i] << 16) | (rgbArray[i + 1] << 8) | rgbArray[i + 2]).toString(16).slice(1)}`;
+    for (let i = 0; i < rgbArray.length-4; i += 4) {
+        
+        let r = Number(rgbArray[i]).toString(16) || 'ff';
+        let g = Number(rgbArray[i+1]).toString(16) || 'ff';
+        let b = Number(rgbArray[i+2]).toString(16) || 'ff';
+        output += `#${r}${g}${b}`;
     };
 
-    return hexString;
+    return output;
 };
